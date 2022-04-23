@@ -22,3 +22,10 @@ Implement Greedy search algorithm for any of the following application:
 5. Prim's Minimal Spanning Tree Algorithm
 6. Kruskal's Minimal Spanning Tree Algorithm
 7. Dijkstra's Minimal Spanning Tree Algorithm
+
+## Group B
+
+**Assihnment-4**
+
+Implement a solution for a Constraint Satisfaction Problem using Branch and Bound and Backtracking for n-queens problem or a graph coloring problem.
+
