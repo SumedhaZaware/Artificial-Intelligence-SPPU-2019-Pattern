@@ -27,5 +27,4 @@ Implement Greedy search algorithm for any of the following application:
 
 **Assihnment-4**
 
-Implement a solution for a Constraint Satisfaction Problem using Branch and Bound and Backtracking for n-queens problem or a graph coloring problem.
-
+Develop an elementary catboat for any suitable customer interaction application.
