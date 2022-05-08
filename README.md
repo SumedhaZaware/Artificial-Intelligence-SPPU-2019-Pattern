@@ -28,3 +28,13 @@ Implement Greedy search algorithm for any of the following application:
 **Assihnment-4**
 
 Develop an elementary catboat for any suitable customer interaction application.
+
+## Group C
+
+Implement any one of the following Expert System
+1. Information management
+2. Hospitals and medical facilities
+3. Help desks management
+4. Employee performance evaluation
+5. Stock market trading
+6. Airline scheduling and cargo schedules
