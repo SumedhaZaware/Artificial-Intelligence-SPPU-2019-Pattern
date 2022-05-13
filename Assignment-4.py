@@ -1,40 +1,57 @@
-def is_attack(i, j, board, N):
-    for k in range(1, i):
-        if(board[k][j] == 1):
-            return True
-    k = i-1
-    l = j+1
+# Number of queens
+n=4
+# Matrix
+a=[[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]]
+# Dictionary for backtrack
+b={}
 
-    while (k>=1 and l<=N):
-        if (board[k][l] == 1):
-            return True
-        k=k+1
-        l=l+1
-    k = i-1
-    l = j-1
+# Checking if column is safe
+def isColumnSafe(r,c):
+    while(r>=0):
+        if(a[r][c] == 1):
+            return 0
+        r = r-1
+    return 1
 
-    while (k>=1 and l>=1):
-        if (board[k][l] == 1):
-            return True
-        k=k-1
-        l=l-1
-        
-    return False
+# Checking if left diagonal is safe
+def isLeftDiagonalSafe(r,c):
+    while(r>=0 and c>=0):
+        if(a[r][c] == 1):
+            return 0
+        r = r-1
+        c = c-1
+    return 1
 
-def n_queen(row, n, N, board):
-    if (n==0):
+# Checking if right diagonal is safe
+def isRightDiagonalSafe(r,c):
+    while(r>=0 and c<n):
+        if(a[r][c]==1):
+            return 0
+        r = r-1
+        c = c+1
+    return 1
+
+def isSafe(r,c):
+    if(isColumnSafe(r,c) and isLeftDiagonalSafe(r,c) and isRightDiagonalSafe(r,c)):
         return True
-    for j in range(1, N+1):
-        if(not(is_attack(row, j, board, N))):
-            board[row][j] = 1
-            if (n_queen(row+1, n-1, N, board)):
-                return True
-    
-            board[row][j] = 0
     return False
-
-if __name__ == '__main__':
-    board = [[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0]]
-    n_queen(1, 4, 4, board)
-    for i in range(1, 5):
-        print(board[i][1:])
+def chessboard(r,c):
+    if(r>=n):
+        return 
+    p = 0
+    while c<n:
+        p = isSafe(r,c)
+        if p == 1:
+            a[r][c] = 1
+            b.update({r:c})
+            break
+        c=c+1
+    
+    if p==1:
+        chessboard(r+1,0)
+    else:
+        a[r-1][b.get(r-1)]=0
+        chessboard(r-1,int(b.get(r-1))+1)
+chessboard(0,0)
+print("Matrix is:- ",a)
+print("Dictionary is:- ",b)
