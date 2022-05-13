@@ -1,96 +1,127 @@
-'''
-A* Algorithm Implementation
-'''
-# from copy import deepcopy
-variable_name = "" #@param {type:"string"}
-class Node:
-    def __init__(self, data, level, fval):
-        self.data = data
-        self.level = level
-        self.fval = fval
+# A* algorithm to solve 8 puzzle problem
+import copy
+final = [[1,2,3],[4,5,6],[7,8,-1]]
+initial = [[1,2,3],[-1,4,6],[7,5,8]]
 
-user_input = [[0, 2, 3], [1, 4, 6], [7, 5, 8]]
-start = Node(user_input, 0, 0)
-goal = [[1, 2, 3], [4, 5, 6], [7, 8, 0]]
-open = []
-closed = []
+#function to find heuristic cost
+def gn(state, finalstate):
+	count = 0
+	for i in range(3):
+		for j in range(3):
+			if(state[i][j]!=-1):
+				if(state[i][j] != finalstate[i][j]):
+					count+=1
+	return count
 
-def copy(curr):
-    temp = []
-    for i in curr:
-        t = []
-        for j in i:
-            t.append(j)
-            temp.append(t)
-    return temp
+def findposofblank(state):
+	for i in range(3):
+		for j in range(3):
+			if(state[i][j] == -1):
+				return [i,j]
 
-def generate_children(curr):
-    global level
-    for i in range(3):
-        for j in range(3):
-            if curr.data[i][j] == 0:
-                row = i
-                col = j
-    children = []
-    temp = curr.data
-    level = curr.level
-    if row - 1 >= 0:
-        child1 = copy(temp)
-        t = child1[row][col]
-        child1[row][col] = child1[row-1][col]
-        child1[row-1][col] = t
-        child = Node(child1, level+1, 0)
-        children.append(child)
-    if row + 1 < 3:
-        child1 = copy(temp)
-        t = child1[row][col]
-        child1[row][col] = child1[row+1][col]
-        child1[row+1][col] = t
-        child = Node(child1, level+1, 0)
-        children.append(child)
-        level += 1
-    if col - 1 >= 0:
-        child1 = copy(temp)
-        t = child1[row][col]
-        child1[row][col] = child1[row][col-1]
-        child1[row][col-1] = t
-        child = Node(child1, level+1, 0)
-        children.append(child)
-        level += 1
-    if col + 1 < 3:
-        child1 = copy(temp)
-        t = child1[row][col]
-        child1[row][col] = child1[row][col+1]
-        child1[row][col+1] = t
-        child = Node(child1, level+1, 0)
-        children.append(child)
-        level += 1
-    return children
+def move_left(state, pos):
+	if(pos[1]==0):
+		return None
+	retarr = copy.deepcopy(state)
+	retarr[pos[0]][pos[1]],retarr[pos[0]][pos[1]-1] = retarr[pos[0]][pos[1]-1],retarr[pos[0]][pos[1]]
+	return retarr
 
-def f(curr):
-    hval = h(curr.data)
-    return  hval + curr.level
+def move_up(state, pos):
+	if(pos[0]==0):
+		return None
+	retarr = copy.deepcopy(state)
+	#for i in state:
+		#retarr.append(i)
+	retarr[pos[0]][pos[1]],retarr[pos[0]-1][pos[1]] = retarr[pos[0]-1][pos[1]],retarr[pos[0]][pos[1]]
+	return retarr
 
-def h(curr):
-    temp = 0
-    for i in range(3):
-        for j in range(3):
-            if curr[i][j] != goal[i][j] and curr[i][j] != 0:
-                temp += 1
-    return temp
+def move_right(state, pos):
+	if(pos[1]==2):
+		return None
+	retarr = copy.deepcopy(state)
+	#for i in state:
+		#retarr.append(i)
+	retarr[pos[0]][pos[1]],retarr[pos[0]][pos[1]+1] = retarr[pos[0]][pos[1]+1],retarr[pos[0]][pos[1]]
+	return retarr
 
-print("Starting matrix: ", start.data)
-open.append(start)
-while True:
-    curr = open[0]
-    if h(curr.data) == 0:
-        print(h(curr.data))
-        print("Goal reached: ", curr.data)
-        break
-    children = generate_children(curr)
-    for i in children:
-        i.fval = f(i)
-        open.append(i)
-    closed.append(curr)
-    del open[0]
-    open.sort(key=lambda x: f(curr), reverse=False)
+def move_down(state, pos):
+	if(pos[0]==2):
+		return None
+	retarr = copy.deepcopy(state)
+	retarr[pos[0]][pos[1]],retarr[pos[0]+1][pos[1]] = retarr[pos[0]+1][pos[1]],retarr[pos[0]][pos[1]]
+	return retarr
+
+def printMatrix(matricesArray):
+	print("")
+	counter = 1
+	for matrix in matricesArray:
+		print("Step {}".format(counter))
+		for row in matrix:
+			print(row)
+		counter+=1
+		print("")
+		
+def eightPuzzle(initialstate, finalstate):
+	hn=0
+	explored = []
+	while(True):
+		explored.append(initialstate)
+		if(initialstate == finalstate):
+			break
+		hn+=1
+		left = move_left(initialstate, findposofblank(initialstate))
+		right = move_right(initialstate, findposofblank(initialstate))
+		up = move_up(initialstate, findposofblank(initialstate))
+		down = move_down(initialstate, findposofblank(initialstate))
+		fnl=1000
+		fnr=1000
+		fnu=1000
+		fnd=1000
+		
+		if(left!=None):
+			fnl = hn + gn(left,finalstate)
+		
+		if(right!=None):
+			fnr = hn + gn(right,finalstate)
+		
+		if(up!=None):
+			fnu = hn + gn(up,finalstate)
+		
+		if(down!=None):
+			fnd = hn + gn(down,finalstate)
+
+		minfn = min(fnl, fnr, fnu, fnd)
+		if((fnl == minfn) and (left not in explored)):
+			initialstate = left
+		elif((fnr == minfn) and (right not in explored)):
+			initialstate = right
+		elif((fnu == minfn) and (up not in explored)):
+			initialstate = up
+		elif((fnd == minfn) and (down not in explored)):
+			initialstate = down
+	printMatrix(explored)
+
+#eightPuzzle(initial, final)
+def main():
+	while(True):
+		ch = int(input("PRESS 1 to continue and 0 to Exit : "))
+		if(not ch):
+			break
+		start = []
+		print("START STATE\n")
+		for i in range(3):
+			arr=[]
+			for j in range(3):
+				a = int(input("Enter element at  {},{}: ".format(i,j)))
+				arr.append(a)
+			start.append(arr)
+		final = []
+		print("FINAL STATE\n")
+		for i in range(3):
+			arr=[]
+			for j in range(3):
+				a = int(input("Enter element at  {},{}: ".format(i,j)))
+				arr.append(a)
+			final.append(arr)
+		eightPuzzle(start, final)
+main()
